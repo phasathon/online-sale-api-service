@@ -1,0 +1,6 @@
+server:
+  port: 9009
+spring.data:
+  mongodb:
+    uri: mongodb+srv://phasathon:0907363781B!g@cluster0.unqdf.mongodb.net/online-sale
+#    host: cluster0.unqdf.mongodb.net
