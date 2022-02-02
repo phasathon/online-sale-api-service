@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.rm9.entity.Order;
 import com.rm9.entity.Product;
 
 @Repository
@@ -29,5 +30,16 @@ public class OnlineSaleRepositoryImpl implements OnlineSaleRepository {
 		}
 		return resultList;
 	}
+
+	@Override
+	public void saveOrder(Order order) {
+		try {
+			mongoTemplate.save(order);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+		}
+	}
+	
+	
 
 }

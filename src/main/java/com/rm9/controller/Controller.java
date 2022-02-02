@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rm9.model.ConfirmReq;
+import com.rm9.model.ConfirmtResp;
 import com.rm9.model.GetProductResp;
 import com.rm9.service.OnlineSaleService;
 
@@ -31,6 +34,14 @@ public class Controller {
 		GetProductResp getProductResp = onlineSaleService.getProduct();
 		log.info("[EXIT][getProduct] with data: "+ getProductResp.toString());
 		return getProductResp;
+	}
+	
+	@PostMapping("/confirm")
+	public ConfirmtResp confirm(@RequestBody ConfirmReq req) throws IOException {
+		log.info("[ENTER][confirm]");
+		ConfirmtResp confirmtResp = onlineSaleService.confirm(req);
+		log.info("[EXIT][confirm] with data: "+ confirmtResp.toString());
+		return confirmtResp;
 	}
 
 }
