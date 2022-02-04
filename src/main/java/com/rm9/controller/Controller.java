@@ -7,6 +7,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rm9.model.ConfirmReq;
 import com.rm9.model.ConfirmtResp;
 import com.rm9.model.GetProductResp;
+import com.rm9.model.PrintReq;
 import com.rm9.service.OnlineSaleService;
 
 @CrossOrigin
@@ -43,5 +46,20 @@ public class Controller {
 		log.info("[EXIT][confirm] with data: "+ confirmtResp.toString());
 		return confirmtResp;
 	}
+	
+	@PostMapping(value = "print", produces = "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+	public ResponseEntity<byte[]> print(@RequestBody PrintReq req) throws IOException {
+
+		byte[] content = null;
+		try {
+			content = onlineSaleService.print(req);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok().contentLength(content.length)
+				.header(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + req.getRequestId()).body(content);
+	}
+
 
 }

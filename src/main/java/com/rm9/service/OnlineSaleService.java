@@ -1,17 +1,34 @@
 package com.rm9.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import com.rm9.entity.Order;
 import com.rm9.entity.Product;
 import com.rm9.model.ConfirmReq;
 import com.rm9.model.ConfirmtResp;
 import com.rm9.model.GetProductResp;
+import com.rm9.model.PrintReq;
 import com.rm9.repository.OnlineSaleRepository;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 
 @Service
@@ -73,6 +90,26 @@ public class OnlineSaleService {
 		confirmtResp.setApiStatus(1);
 		confirmtResp.setApiMessage("success");
 		return confirmtResp;
+	}
+
+	public byte[] print(PrintReq req) throws JRException, IOException {
+//		File file = ResourceUtils.getFile("classpath:reportTemplates/Blank_A4.jrxml");
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		File file = new File(classloader.getResource("Blank_A4.jrxml").getFile());
+		String abpath = file.getAbsolutePath();
+		JasperReport jasperReport = JasperCompileManager.compileReport(abpath);
+		List<PrintReq> reqList = new ArrayList<>();
+		reqList.add(req);
+		JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(reqList);
+		Map<String,Object> parameters = new HashMap<>();
+		parameters.put("CreatedBy", "GHB");
+		parameters.put("startDate", "123123");
+		parameters.put("endDate", "123123");
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,datasource);
+		String fileLocation = new File("src\\main\\resources").getAbsolutePath() + "\\" + req.getRequestId();
+		JasperExportManager.exportReportToPdfFile(jasperPrint,fileLocation);
+		byte[] bytes = Files.readAllBytes(Paths.get(fileLocation));
+		return bytes;
 	}
 	
 }
