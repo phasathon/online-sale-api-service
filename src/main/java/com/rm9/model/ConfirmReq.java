@@ -1,11 +1,14 @@
 package com.rm9.model;
 
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 public class ConfirmReq {
 	
+	private BigDecimal requestId;
 	private String name;
 	private String confirmDate;
 	private String address;

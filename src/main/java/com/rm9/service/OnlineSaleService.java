@@ -46,6 +46,7 @@ public class OnlineSaleService {
 	
 	public ConfirmtResp confirm(ConfirmReq req) {
 		Order order = new Order();
+		order.setRequestId(req.getRequestId());
 		order.setName(req.getName());
 		order.setAddress(req.getAddress());
 		order.setConfirmDate(req.getConfirmDate());

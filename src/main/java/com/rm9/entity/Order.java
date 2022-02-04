@@ -1,5 +1,6 @@
 package com.rm9.entity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,6 +11,9 @@ import lombok.Data;
 @Document(collection = "order")
 @Data
 public class Order {
+	
+	@Field("request_id")
+	private BigDecimal requestId;
 	@Field("name")
 	private String name;
 	@Field("confirm_date")
