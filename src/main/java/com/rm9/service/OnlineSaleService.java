@@ -94,8 +94,10 @@ public class OnlineSaleService {
 
 	public byte[] print(PrintReq req) throws JRException, IOException {
 //		File file = ResourceUtils.getFile("classpath:reportTemplates/Blank_A4.jrxml");
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		File file = new File(classloader.getResource("Blank_A4.jrxml").getFile());
+		
+		File file = new File("/app/file:/app/resources/"+"Blank_A4.jrxml");
+//		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+//		File file = new File(classloader.getResource("Blank_A4.jrxml").getFile());
 		String abpath = file.getAbsolutePath();
 		JasperReport jasperReport = JasperCompileManager.compileReport(abpath);
 		List<PrintReq> reqList = new ArrayList<>();
