@@ -3,6 +3,7 @@ package com.rm9.service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,10 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import com.rm9.controller.Controller;
 import com.rm9.entity.Order;
 import com.rm9.entity.Product;
 import com.rm9.model.ConfirmReq;
@@ -36,6 +40,8 @@ public class OnlineSaleService {
 	
 	@Autowired
 	private OnlineSaleRepository onlineSaleRepository;
+	
+	private final Logger log = LoggerFactory.getLogger(OnlineSaleService.class);
 	
 	public GetProductResp getProduct() {
 		
@@ -95,23 +101,39 @@ public class OnlineSaleService {
 	public byte[] print(PrintReq req) throws JRException, IOException {
 //		File file = ResourceUtils.getFile("classpath:reportTemplates/Blank_A4.jrxml");
 		
-		File file = new File("/app/file:/app/resources/"+"Blank_A4.jrxml");
+		 String userDirectory = FileSystems.getDefault()
+			        .getPath("")
+			        .toAbsolutePath()
+			        .toString();
+		 
+		 log.info("--------------------");
+		 log.info(userDirectory);
+		 log.info("--------------------");
+		
+		 
+		 File file = ResourceUtils.getFile("classpath:application.properties");
+		 String abpath = file.getAbsolutePath();
+		 log.info("--------------------");
+		 log.info(abpath);
+		 log.info("--------------------");
+		 
+//		File file = new File("/app/file:/app/resources/"+"Blank_A4.jrxml");
 //		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-//		File file = new File(classloader.getResource("Blank_A4.jrxml").getFile());
-		String abpath = file.getAbsolutePath();
-		JasperReport jasperReport = JasperCompileManager.compileReport(abpath);
-		List<PrintReq> reqList = new ArrayList<>();
-		reqList.add(req);
-		JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(reqList);
-		Map<String,Object> parameters = new HashMap<>();
-		parameters.put("CreatedBy", "GHB");
-		parameters.put("startDate", "123123");
-		parameters.put("endDate", "123123");
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,datasource);
-		String fileLocation = new File("src\\main\\resources").getAbsolutePath() + "\\" + req.getRequestId();
-		JasperExportManager.exportReportToPdfFile(jasperPrint,fileLocation);
-		byte[] bytes = Files.readAllBytes(Paths.get(fileLocation));
-		return bytes;
+////		File file = new File(classloader.getResource("Blank_A4.jrxml").getFile());
+//		String abpath = file.getAbsolutePath();
+//		JasperReport jasperReport = JasperCompileManager.compileReport(abpath);
+//		List<PrintReq> reqList = new ArrayList<>();
+//		reqList.add(req);
+//		JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(reqList);
+//		Map<String,Object> parameters = new HashMap<>();
+//		parameters.put("CreatedBy", "GHB");
+//		parameters.put("startDate", "123123");
+//		parameters.put("endDate", "123123");
+//		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,datasource);
+//		String fileLocation = new File("src\\main\\resources").getAbsolutePath() + "\\" + req.getRequestId();
+//		JasperExportManager.exportReportToPdfFile(jasperPrint,fileLocation);
+//		byte[] bytes = Files.readAllBytes(Paths.get(fileLocation));
+		return null;
 	}
 	
 }
